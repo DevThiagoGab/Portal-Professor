@@ -6,13 +6,6 @@ import StatusMessage from "../../components/StatusMessage";
 export default function Dashboard() {
     const { alunos, turmas, avaliacoes } = useContext(DataContext);
 
-    // Dados simulados de próximas avaliações
-    const proximas = [
-        { turma: "1º Ano A", data: "15/11/2025", nome: "Prova 1" },
-        { turma: "2º Ano B", data: "20/11/2025", nome: "Trabalho em Grupo" },
-        { turma: "3º Ano C", data: "25/11/2025", nome: "Apresentação Final" },
-    ];
-
     if (!alunos && !turmas)
         return (
             <Layout>
@@ -66,13 +59,17 @@ export default function Dashboard() {
 
             <h3>📅 Próximas Avaliações</h3>
 
-            {proximas.length === 0 ? (
-                <StatusMessage type="empty" message="Nenhuma avaliação agendada." />
+            {avaliacoes.length === 0 ? (
+                <StatusMessage type="empty" message="Nenhuma avaliação cadastrada." />
             ) : (
                 <table
                     border="1"
                     cellPadding="6"
-                    style={{ width: "100%", borderCollapse: "collapse" }}
+                    style={{
+                        width: "100%",
+                        borderCollapse: "collapse",
+                        textAlign: "center",
+                    }}
                 >
                     <thead style={{ background: "#f5f5f5" }}>
                         <tr>
@@ -82,7 +79,7 @@ export default function Dashboard() {
                         </tr>
                     </thead>
                     <tbody>
-                        {proximas.map((p, i) => (
+                        {avaliacoes.map((p, i) => (
                             <tr key={i}>
                                 <td>{p.turma}</td>
                                 <td>{p.data}</td>
