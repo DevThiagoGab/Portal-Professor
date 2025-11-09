@@ -27,7 +27,7 @@ O **Portal do Professor** é um sistema de gerenciamento educacional onde o usu�
 ### 📊 Dashboard
 - Mostra total de alunos e turmas.
 - Lista de próximas avaliações (dados simulados).
-- Layout limpo, com tabela centralizada e cantos arredondados.
+- Layout limpo, com tabela centralizada.
 
 ### 👩‍🏫 Alunos
 - Busca e filtros por nome, turma e status.
@@ -61,61 +61,99 @@ O **Portal do Professor** é um sistema de gerenciamento educacional onde o usu�
 
 ---
 
+## 🧱 Estrutura de Pastas
+
+```
+src/
+ ├── api/
+ │    └── api.js                 # Simulação de API (login)
+ ├── context/
+ │    ├── AuthContext.jsx        # Autenticação global
+ │    └── DataContext.jsx        # Dados de alunos, turmas, etc.
+ ├── pages/
+ │    ├── Login/                 # Tela de login
+ │    ├── Dashboard/             # Painel principal
+ │    ├── Alunos/                # Gerenciamento de alunos
+ │    ├── Turmas/                # Gerenciamento de turmas
+ │    └── Avaliacoes/            # Configuração de avaliações
+ ├── routes/
+ │    └── PrivateRoute.jsx       # Proteção das rotas
+ ├── App.js                      # Definição das rotas
+ ├── index.css / App.css         # Estilos globais
+ └── index.js                    # Ponto de entrada do React
+```
+
+---
+
 ## 🔧 Como Executar o Projeto
 
 ### 1️⃣ Clone o repositório
 ```bash
 git clone https://github.com/seuusuario/portal-professor.git
 cd portal-professor
+```
+
+### 2️⃣ Instale as dependências
+```bash
 npm install
+```
+
+### 3️⃣ Execute o projeto
+```bash
 npm start
+```
+
+O projeto rodará em:  
+👉 **http://localhost:3000**
+
+---
+
+## 🔑 Login de Teste
 
 Use o seguinte usuário para acessar o sistema:
 
-E-mail: admin@email.com
-Senha: 123456
+```
+E-mail: thiagogabriel1904@gmail.com
+Senha: 123
+```
 
-🎨 Layout e Estilo
+---
 
-Layout responsivo e limpo.
+## 🎨 Layout e Estilo
 
-Tabela de avaliações centralizada e com cantos arredondados.
+- Layout limpo.
+- Tabela de avaliações centralizada.
+- Componentes com feedback de estado (carregando, erro, vazio).
 
-Componentes com feedback de estado (carregando, erro, vazio).
+---
 
-💡 Conceitos Demonstrados
+## 💡 Conceitos Demonstrados
 
-Estrutura modular e escalável.
+- Estrutura modular e escalável.
+- Boas práticas de componentização.
+- Uso correto de **hooks** (`useState`, `useEffect`, `useContext`).
+- Autenticação baseada em **Context API**.
+- Armazenamento de sessão com **localStorage**.
+- Proteção de rotas e redirecionamento condicional.
+- Separação entre responsabilidades (API, contexto, interface).
 
-Boas práticas de componentização.
+---
 
-Uso correto de hooks (useState, useEffect, useContext).
+## 🧭 Possíveis Melhorias
 
-Autenticação baseada em Context API.
+- Implementar autenticação real com **JWT e API REST**.
+- Integrar banco de dados (ex.: PostgreSQL ou MongoDB).
+- Adicionar upload de notas e relatórios.
+- Criar sistema de permissões (ex.: professor/admin).
+- Implementar testes unitários com Jest.
 
-Armazenamento de sessão com localStorage.
+---
 
-Proteção de rotas e redirecionamento condicional.
+## 👨‍💻 Autor
 
-Separação entre responsabilidades (API, contexto, interface).
+**Thiago Gabriel**  
+Desenvolvedor  
+📧 [thiagogabriel1904@gmail.com](mailto:thiagogabriel1904@gmail.com)  
+💼 [GitHub](https://github.com/DevThiagoGab) | [LinkedIn](https://linkedin.com/in/devthiagogabriel)
 
-🧭 Possíveis Melhorias
-
-Implementar autenticação real com JWT e API REST.
-
-Integrar banco de dados (ex.: PostgreSQL ou MongoDB).
-
-Adicionar upload de notas e relatórios.
-
-Criar sistema de permissões (ex.: professor/admin).
-
-Implementar testes unitários com Jest.
-
-👨‍💻 Autor
-
-Thiago Gabriel
-Desenvolvedor Full Stack | React • Node.js • MySQL
-📧 thiagogabriel1904@gmail.com
-
-💼 GitHub
- | LinkedIn
+---
