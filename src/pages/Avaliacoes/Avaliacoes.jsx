@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import Layout from "../../components/Layout";
 import { DataContext } from "../../context/DataContext";
 import StatusMessage from "../../components/StatusMessage";
@@ -10,7 +10,24 @@ export default function Avaliacoes() {
     const [peso, setPeso] = useState("");
     const [turma, setTurma] = useState("");
     const [data, setData] = useState("");
+    const [carregando, setCarregando] = useState(true);
+    const [erro, setErro] = useState(null);
 
+    // 🕓 Simula carregamento inicial (como se viesse de API)
+    useEffect(() => {
+        try {
+            setCarregando(true);
+            const timer = setTimeout(() => {
+                setCarregando(false);
+            }, 1000);
+            return () => clearTimeout(timer);
+        } catch (e) {
+            setErro("Erro ao carregar as avaliações.");
+            setCarregando(false);
+        }
+    }, []);
+
+    // ⚖️ Calcula total geral
     const totalPeso = avaliacoes.reduce((acc, a) => acc + Number(a.peso), 0);
 
     const handleAdd = () => {
@@ -54,10 +71,33 @@ export default function Avaliacoes() {
         }
     };
 
+    // ⏳ Estado de carregamento
+    if (carregando) {
+        return (
+            <Layout>
+                <StatusMessage type="loading" message="Carregando avaliações..." />
+            </Layout>
+        );
+    }
+
+    // ❌ Estado de erro
+    if (erro) {
+        return (
+            <Layout>
+                <StatusMessage
+                    type="error"
+                    message={erro}
+                    onRetry={() => window.location.reload()}
+                />
+            </Layout>
+        );
+    }
+
     return (
         <Layout>
             <h2>Configuração de Avaliações</h2>
 
+            {/* Formulário de criação */}
             <div
                 style={{
                     display: "flex",
@@ -70,30 +110,38 @@ export default function Avaliacoes() {
                     placeholder="Nome da atividade"
                     value={nome}
                     onChange={(e) => setNome(e.target.value)}
+                    style={{ padding: 6 }}
                 />
                 <input
                     placeholder="Peso (%)"
                     type="number"
                     value={peso}
                     onChange={(e) => setPeso(e.target.value)}
+                    style={{ padding: 6, width: 90 }}
                 />
                 <input
                     placeholder="Turma"
                     value={turma}
                     onChange={(e) => setTurma(e.target.value)}
+                    style={{ padding: 6, width: 120 }}
                 />
                 <input
                     type="date"
                     value={data}
                     onChange={(e) => setData(e.target.value)}
+                    style={{ padding: 6 }}
                 />
-                <button onClick={handleAdd}>Adicionar</button>
+                <button onClick={handleAdd} style={{ padding: 6 }}>
+                    Adicionar
+                </button>
             </div>
 
+            {/* Soma total */}
             <p style={{ marginTop: 10 }}>
                 Soma total dos pesos: <b>{totalPeso}%</b>
             </p>
 
+            {/* Lista de avaliações */}
             {avaliacoes.length === 0 ? (
                 <StatusMessage
                     type="empty"
@@ -103,7 +151,11 @@ export default function Avaliacoes() {
                 <table
                     border="1"
                     cellPadding="6"
-                    style={{ width: "100%", borderCollapse: "collapse", marginTop: 20 }}
+                    style={{
+                        width: "100%",
+                        borderCollapse: "collapse",
+                        marginTop: 20,
+                    }}
                 >
                     <thead style={{ background: "#f5f5f5" }}>
                         <tr>
@@ -122,9 +174,7 @@ export default function Avaliacoes() {
                                 <td>{a.nome}</td>
                                 <td>{a.peso}%</td>
                                 <td>
-                                    <button onClick={() => handleDelete(i)}>
-                                        Excluir
-                                    </button>
+                                    <button onClick={() => handleDelete(i)}>Excluir</button>
                                 </td>
                             </tr>
                         ))}
@@ -132,6 +182,7 @@ export default function Avaliacoes() {
                 </table>
             )}
 
+            {/* Resumo por turma */}
             {avaliacoes.length > 0 && (
                 <div style={{ marginTop: 20 }}>
                     <h4>Resumo por Turma</h4>
