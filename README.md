@@ -1,70 +1,159 @@
-# Getting Started with Create React App
+# 🎓 Portal do Professor
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Aplicação desenvolvida como desafio técnico, com foco em boas práticas de **React**, **Context API**, **autenticação com JWT simulado**, **rotas protegidas**, **gerenciamento de estados** e **organização de arquitetura**.
 
-## Available Scripts
+---
 
-In the project directory, you can run:
+## 🚀 Visão Geral
 
-### `npm start`
+O **Portal do Professor** é um sistema de gerenciamento educacional onde o usuário (professor) pode:
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- Fazer login com autenticação simulada (`fakeApi`);
+- Acessar um **Dashboard** com informações resumidas;
+- Gerenciar **alunos**, **turmas** e **avaliações**;
+- Ver uma tabela centralizada e estilizada de **próximas avaliações**;
+- Navegar entre páginas através de um menu lateral.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+---
 
-### `npm test`
+## 🧩 Funcionalidades
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### 🔐 Autenticação
+- Login simulado com e-mail e senha.
+- Persistência de sessão via **localStorage**.
+- Logout com limpeza automática do estado.
+- Rotas protegidas (`/dashboard`, `/alunos`, `/turmas`, `/avaliacoes`).
 
-### `npm run build`
+### 📊 Dashboard
+- Mostra total de alunos e turmas.
+- Lista de próximas avaliações (dados simulados).
+- Layout limpo, com tabela centralizada.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### 👩‍🏫 Alunos
+- Busca e filtros por nome, turma e status.
+- Feedbacks visuais: carregando, erro e lista vazia.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### 🏫 Turmas
+- Listagem com nome, capacidade e quantidade de alunos.
+- Criação e edição de turmas.
+- Associação de alunos a turmas.
+- Feedbacks de estado (carregando, erro, vazio).
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### 🧾 Avaliações
+- Configuração de critérios de avaliação com pesos (%).
+- Soma total deve ser 100%.
+- Adicionar, editar e remover critérios.
+- Alertas quando regras são violadas.
+- Salvamento no contexto (ou localStorage).
 
-### `npm run eject`
+---
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## 🧠 Tecnologias Utilizadas
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+| Tecnologia | Uso |
+|-------------|-----|
+| **React** | Biblioteca principal de UI |
+| **React Router DOM** | Navegação e rotas protegidas |
+| **Context API** | Controle global de autenticação e dados |
+| **CSS Puro** | Estilização e responsividade |
+| **Fake API (mock)** | Simulação de backend com validação de login |
+| **LocalStorage** | Persistência de sessão do usuário |
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+---
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+## 🧱 Estrutura de Pastas
 
-## Learn More
+```
+src/
+ ├── api/
+ │    └── api.js                 # Simulação de API (login)
+ ├── context/
+ │    ├── AuthContext.jsx        # Autenticação global
+ │    └── DataContext.jsx        # Dados de alunos, turmas, etc.
+ ├── pages/
+ │    ├── Login/                 # Tela de login
+ │    ├── Dashboard/             # Painel principal
+ │    ├── Alunos/                # Gerenciamento de alunos
+ │    ├── Turmas/                # Gerenciamento de turmas
+ │    └── Avaliacoes/            # Configuração de avaliações
+ ├── routes/
+ │    └── PrivateRoute.jsx       # Proteção das rotas
+ ├── App.js                      # Definição das rotas
+ ├── index.css / App.css         # Estilos globais
+ └── index.js                    # Ponto de entrada do React
+```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+---
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## 🔧 Como Executar o Projeto
 
-### Code Splitting
+### 1️⃣ Clone o repositório
+```bash
+git clone https://github.com/seuusuario/portal-professor.git
+cd portal-professor
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+### 2️⃣ Instale as dependências
+```bash
+npm install
+```
 
-### Analyzing the Bundle Size
+### 3️⃣ Execute o projeto
+```bash
+npm start
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+O projeto rodará em:  
+👉 **http://localhost:3000**
 
-### Making a Progressive Web App
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+## 🔑 Login de Teste
 
-### Advanced Configuration
+Use o seguinte usuário para acessar o sistema:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+```
+E-mail: thiagogabriel1904@gmail.com
+Senha: 123
+```
 
-### Deployment
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+## 🎨 Layout e Estilo
 
-### `npm run build` fails to minify
+- Layout limpo.
+- Tabela de avaliações centralizada.
+- Componentes com feedback de estado (carregando, erro, vazio).
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+---
+
+## 💡 Conceitos Demonstrados
+
+- Estrutura modular e escalável.
+- Boas práticas de componentização.
+- Uso correto de **hooks** (`useState`, `useEffect`, `useContext`).
+- Autenticação baseada em **Context API**.
+- Armazenamento de sessão com **localStorage**.
+- Proteção de rotas e redirecionamento condicional.
+- Separação entre responsabilidades (API, contexto, interface).
+
+---
+
+## 🧭 Possíveis Melhorias
+
+- Implementar autenticação real com **JWT e API REST**.
+- Integrar banco de dados (ex.: PostgreSQL ou MongoDB).
+- Adicionar upload de notas e relatórios.
+- Criar sistema de permissões (ex.: professor/admin).
+- Implementar testes unitários com Jest.
+
+---
+
+## 👨‍💻 Autor
+
+**Thiago Gabriel**  
+Desenvolvedor  
+📧 [thiagogabriel1904@gmail.com](mailto:thiagogabriel1904@gmail.com)  
+💼 [GitHub](https://github.com/DevThiagoGab) | [LinkedIn](https://linkedin.com/in/devthiagogabriel)
+
+---
