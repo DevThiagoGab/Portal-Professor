@@ -107,18 +107,16 @@ export default function Alunos() {
             <h2>Gerenciamento de Alunos</h2>
 
             {/* Busca e filtros */}
-            <div style={{ display: "flex", flexWrap: "wrap", gap: "8px", marginBottom: 20 }}>
+            <div className="filtros">
                 <input
                     type="text"
                     placeholder="Buscar por nome..."
                     value={busca}
                     onChange={(e) => setBusca(e.target.value)}
-                    style={{ padding: 6, minWidth: 175 }}
                 />
                 <select
                     value={filtroTurma}
                     onChange={(e) => setFiltroTurma(e.target.value)}
-                    style={{ padding: 6 }}
                 >
                     {turmasDisponiveis.map(t => (
                         <option key={t} value={t}>{t}</option>
@@ -127,7 +125,6 @@ export default function Alunos() {
                 <select
                     value={filtroStatus}
                     onChange={(e) => setFiltroStatus(e.target.value)}
-                    style={{ padding: 6 }}
                 >
                     <option value="Status">Status</option>
                     <option value="Ativo">Ativo</option>
@@ -136,7 +133,7 @@ export default function Alunos() {
             </div>
 
             {/* Formulário */}
-            <form onSubmit={handleSubmit} style={{ marginBottom: 20 }}>
+            <form onSubmit={handleSubmit} className="form-aluno">
                 <input
                     type="text"
                     name="nome"
@@ -144,7 +141,6 @@ export default function Alunos() {
                     value={form.nome}
                     onChange={handleChange}
                     required
-                    style={{ margin: "4px", padding: 6 }}
                 />
                 <input
                     type="email"
@@ -153,7 +149,6 @@ export default function Alunos() {
                     value={form.email}
                     onChange={handleChange}
                     required
-                    style={{ margin: "4px", padding: 6 }}
                 />
                 <input
                     type="text"
@@ -162,18 +157,16 @@ export default function Alunos() {
                     value={form.turma}
                     onChange={handleChange}
                     required
-                    style={{ margin: "4px", padding: 6, width: 80 }}
                 />
                 <select
                     name="status"
                     value={form.status}
                     onChange={handleChange}
-                    style={{ margin: "4px", padding: 6 }}
                 >
                     <option>Ativo</option>
                     <option>Inativo</option>
                 </select>
-                <button type="submit" style={{ padding: 6 }}>
+                <button type="submit">
                     {editando ? "Salvar" : "Adicionar"}
                 </button>
             </form>
