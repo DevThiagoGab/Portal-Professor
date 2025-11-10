@@ -8,18 +8,16 @@ export default function Turmas() {
 
     const [form, setForm] = useState({ nome: "", capacidade: "" });
     const [editando, setEditando] = useState(null);
-    const [alunoSelecionado, setAlunoSelecionado] = useState("");
     const [turmaSelecionada, setTurmaSelecionada] = useState(null);
+    const [alunoSelecionado, setAlunoSelecionado] = useState("");
     const [carregando, setCarregando] = useState(true);
     const [erro, setErro] = useState(null);
 
-    // Simula carregamento
+    // 🕓 Simula carregamento inicial
     useEffect(() => {
         try {
             setCarregando(true);
-            const timer = setTimeout(() => {
-                setCarregando(false);
-            }, 1000);
+            const timer = setTimeout(() => setCarregando(false), 800);
             return () => clearTimeout(timer);
         } catch {
             setErro("Erro ao carregar turmas.");
@@ -27,16 +25,18 @@ export default function Turmas() {
         }
     }, []);
 
-    // Criar ou editar turma
+    // 🏫 Criação ou edição de turma
     const handleSubmit = (e) => {
         e.preventDefault();
 
         if (!form.nome.trim() || !form.capacidade) return;
 
         if (editando) {
-            setTurmas(
-                turmas.map((t) =>
-                    t.id === editando ? { ...t, nome: form.nome, capacidade: form.capacidade } : t
+            setTurmas((prev) =>
+                prev.map((t) =>
+                    t.id === editando
+                        ? { ...t, nome: form.nome, capacidade: Number(form.capacidade) }
+                        : t
                 )
             );
             setEditando(null);
@@ -47,79 +47,94 @@ export default function Turmas() {
                 capacidade: Number(form.capacidade),
                 alunos: [],
             };
-            setTurmas([...turmas, novaTurma]);
+            setTurmas((prev) => [...prev, novaTurma]);
         }
 
         setForm({ nome: "", capacidade: "" });
     };
 
-    // Selecionar turma (expandir)
+    // 🔁 Alternar exibição de detalhes
     const handleSelectTurma = (id) => {
         setTurmaSelecionada(id === turmaSelecionada ? null : id);
     };
 
-    // Associar aluno (bidirecional)
+    // 🔹 Função auxiliar para buscar nome da turma
+    const getTurmaNome = (id) => {
+        const turma = turmas.find((t) => t.id === id);
+        return turma ? turma.nome : "";
+    };
+
+    // 🧠 Lista atualizada de alunos disponíveis
+    const alunosDisponiveis = alunos.filter(
+        (a) => !a.turma || a.turma === getTurmaNome(turmaSelecionada)
+    );
+
+    // ➕ Associar aluno (bidirecional)
     const handleAssociarAluno = () => {
         if (!alunoSelecionado || !turmaSelecionada) return;
 
-        setTurmas((prevTurmas) =>
-            prevTurmas.map((t) =>
-                t.id === turmaSelecionada && t.alunos.length < t.capacidade
-                    ? {
-                        ...t,
-                        alunos: [...new Set([...t.alunos, alunoSelecionado])],
-                    }
+        const aluno = alunos.find((a) => a.id === Number(alunoSelecionado));
+        if (!aluno) return;
+
+        // Evita adicionar aluno já associado
+        const turmaAtual = turmas.find((t) => t.id === turmaSelecionada);
+        if (turmaAtual.alunos.some((a) => a.id === aluno.id)) return;
+
+        if (turmaAtual.alunos.length >= turmaAtual.capacidade) {
+            alert("Capacidade máxima da turma atingida!");
+            return;
+        }
+
+        // Atualiza turmas
+        setTurmas((prev) =>
+            prev.map((t) =>
+                t.id === turmaSelecionada
+                    ? { ...t, alunos: [...t.alunos, aluno] }
                     : t
             )
         );
 
-        // Atualiza também o campo turma do aluno
-        setAlunos((prevAlunos) =>
-            prevAlunos.map((a) =>
-                a.nome === alunoSelecionado ? { ...a, turma: getTurmaNome(turmaSelecionada) } : a
+        // Atualiza aluno
+        setAlunos((prev) =>
+            prev.map((a) =>
+                a.id === aluno.id ? { ...a, turma: getTurmaNome(turmaSelecionada) } : a
             )
         );
 
         setAlunoSelecionado("");
     };
 
-    // Função auxiliar para buscar o nome da turma pelo ID
-    const getTurmaNome = (id) => {
-        const turma = turmas.find((t) => t.id === id);
-        return turma ? turma.nome : "";
-    };
-
-    // Remover aluno (bidirecional)
-    const handleRemoverAluno = (turmaId, alunoNome) => {
+    // ❌ Remover aluno (bidirecional)
+    const handleRemoverAluno = (turmaId, alunoId) => {
         setTurmas((prev) =>
             prev.map((t) =>
                 t.id === turmaId
-                    ? { ...t, alunos: t.alunos.filter((a) => a !== alunoNome) }
+                    ? { ...t, alunos: t.alunos.filter((a) => a.id !== alunoId) }
                     : t
             )
         );
 
-        // Remove turma do aluno
         setAlunos((prev) =>
-            prev.map((a) => (a.nome === alunoNome ? { ...a, turma: "" } : a))
+            prev.map((a) => (a.id === alunoId ? { ...a, turma: "" } : a))
         );
     };
 
-    // Editar turma
+    // ✏️ Editar turma
     const handleEdit = (turma) => {
         setForm({ nome: turma.nome, capacidade: turma.capacidade });
         setEditando(turma.id);
     };
 
-    // Excluir turma
+    // 🗑️ Excluir turma
     const handleDelete = (id) => {
+        const turmaNome = getTurmaNome(id);
         setTurmas(turmas.filter((t) => t.id !== id));
-        // Remove a turma de todos os alunos que estavam nela
         setAlunos((prev) =>
-            prev.map((a) => (a.turma === getTurmaNome(id) ? { ...a, turma: "" } : a))
+            prev.map((a) => (a.turma === turmaNome ? { ...a, turma: "" } : a))
         );
     };
 
+    // ⏳ Feedbacks
     if (carregando)
         return (
             <Layout>
@@ -142,7 +157,7 @@ export default function Turmas() {
         <Layout>
             <h2>Gerenciamento de Turmas</h2>
 
-            {/* Formulário de criação/edição */}
+            {/* 📝 Formulário */}
             <form onSubmit={handleSubmit} style={{ marginBottom: 20 }}>
                 <input
                     type="text"
@@ -167,7 +182,7 @@ export default function Turmas() {
                 </button>
             </form>
 
-            {/* Lista de turmas */}
+            {/* 📋 Lista de Turmas */}
             {turmas.length === 0 ? (
                 <StatusMessage type="empty" message="Nenhuma turma cadastrada." />
             ) : (
@@ -192,10 +207,7 @@ export default function Turmas() {
                                 <td>{t.capacidade}</td>
                                 <td>{t.alunos.length}</td>
                                 <td>
-                                    <button
-                                        onClick={() => handleSelectTurma(t.id)}
-                                        style={{ marginRight: 6 }}
-                                    >
+                                    <button onClick={() => handleSelectTurma(t.id)} style={{ marginRight: 6 }}>
                                         Ver
                                     </button>
                                     <button onClick={() => handleEdit(t)} style={{ marginRight: 6 }}>
@@ -209,7 +221,7 @@ export default function Turmas() {
                 </table>
             )}
 
-            {/* Detalhes da turma selecionada */}
+            {/* 👇 Detalhes */}
             {turmaSelecionada && (
                 <div
                     style={{
@@ -220,13 +232,11 @@ export default function Turmas() {
                 >
                     <h3>
                         Alunos da turma: {getTurmaNome(turmaSelecionada)} (
-                        {
-                            turmas.find((t) => t.id === turmaSelecionada)?.alunos.length
-                        }{" "}
-                        / {turmas.find((t) => t.id === turmaSelecionada)?.capacidade})
+                        {turmas.find((t) => t.id === turmaSelecionada)?.alunos.length} /
+                        {turmas.find((t) => t.id === turmaSelecionada)?.capacidade})
                     </h3>
 
-                    {/* Associar alunos */}
+                    {/* 🎓 Associar aluno */}
                     <div style={{ marginBottom: 10 }}>
                         <select
                             value={alunoSelecionado}
@@ -234,20 +244,18 @@ export default function Turmas() {
                             style={{ padding: 6, marginRight: 8 }}
                         >
                             <option value="">Selecionar aluno</option>
-                            {alunos
-                                .filter((a) => !a.turma) // só mostra alunos sem turma
-                                .map((a) => (
-                                    <option key={a.id} value={a.nome}>
-                                        {a.nome}
-                                    </option>
-                                ))}
+                            {alunosDisponiveis.map((a) => (
+                                <option key={a.id} value={a.id}>
+                                    {a.nome}
+                                </option>
+                            ))}
                         </select>
                         <button onClick={handleAssociarAluno} style={{ padding: 6 }}>
                             Associar Aluno
                         </button>
                     </div>
 
-                    {/* Alunos associados */}
+                    {/* 📜 Lista de alunos da turma */}
                     {turmas.find((t) => t.id === turmaSelecionada)?.alunos.length === 0 ? (
                         <p style={{ color: "#777" }}>Nenhum aluno associado.</p>
                     ) : (
@@ -255,10 +263,10 @@ export default function Turmas() {
                             {turmas
                                 .find((t) => t.id === turmaSelecionada)
                                 ?.alunos.map((a) => (
-                                    <li key={a}>
-                                        {a}{" "}
+                                    <li key={a.id}>
+                                        {a.nome}{" "}
                                         <button
-                                            onClick={() => handleRemoverAluno(turmaSelecionada, a)}
+                                            onClick={() => handleRemoverAluno(turmaSelecionada, a.id)}
                                             style={{
                                                 color: "red",
                                                 border: "none",
