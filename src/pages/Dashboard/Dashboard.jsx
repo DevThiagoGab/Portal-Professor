@@ -5,24 +5,21 @@ import StatusMessage from "../../components/StatusMessage";
 
 export default function Dashboard() {
     const { alunos, turmas, avaliacoes } = useContext(DataContext);
+
     const [carregando, setCarregando] = useState(true);
     const [erro, setErro] = useState(null);
 
-    // 🕓 Simula carregamento inicial
+    // Simula carregamento inicial
     useEffect(() => {
         try {
-            setCarregando(true);
-            const timer = setTimeout(() => {
-                setCarregando(false);
-            }, 1000);
+            const timer = setTimeout(() => setCarregando(false), 1000);
             return () => clearTimeout(timer);
-        } catch (e) {
+        } catch (err) {
             setErro("Erro ao carregar o painel.");
             setCarregando(false);
         }
     }, []);
 
-    // ⏳ Estado de carregamento
     if (carregando) {
         return (
             <Layout>
@@ -31,7 +28,6 @@ export default function Dashboard() {
         );
     }
 
-    // ❌ Estado de erro
     if (erro) {
         return (
             <Layout>
@@ -44,11 +40,17 @@ export default function Dashboard() {
         );
     }
 
+    // Ordena avaliações por data (ascendente)
+    const avaliacoesOrdenadas = [...avaliacoes].sort((a, b) => {
+        if (!a.data || !b.data) return 0;
+        return new Date(a.data) - new Date(b.data);
+    });
+
     return (
         <Layout>
             <h2>Dashboard</h2>
 
-            {/* 🔹 Cards de resumo */}
+            {/* Cards de resumo */}
             <div
                 style={{
                     display: "flex",
@@ -67,7 +69,6 @@ export default function Dashboard() {
                         padding: 20,
                         borderRadius: 10,
                         textAlign: "center",
-                        boxShadow: "0 2px 5px rgba(0,0,0,0.1)",
                     }}
                 >
                     <h3>Total de Alunos</h3>
@@ -83,7 +84,6 @@ export default function Dashboard() {
                         padding: 20,
                         borderRadius: 10,
                         textAlign: "center",
-                        boxShadow: "0 2px 5px rgba(0,0,0,0.1)",
                     }}
                 >
                     <h3>Total de Turmas</h3>
@@ -94,39 +94,38 @@ export default function Dashboard() {
                     style={{
                         flex: "1",
                         minWidth: 200,
-                        background: "#f39c12",
+                        background: "#9b59b6",
                         color: "white",
                         padding: 20,
                         borderRadius: 10,
                         textAlign: "center",
-                        boxShadow: "0 2px 5px rgba(0,0,0,0.1)",
                     }}
                 >
                     <h3>Total de Avaliações</h3>
-                    <p style={{ fontSize: 24, fontWeight: "bold" }}>{avaliacoes.length}</p>
+                    <p style={{ fontSize: 24, fontWeight: "bold" }}>
+                        {avaliacoes.length}
+                    </p>
                 </div>
             </div>
 
-            {/* 🔸 Tabela de próximas avaliações */}
+            {/* Tabela de próximas avaliações */}
             <h3>📅 Próximas Avaliações</h3>
 
-            {avaliacoes.length === 0 ? (
+            {avaliacoesOrdenadas.length === 0 ? (
                 <StatusMessage type="empty" message="Nenhuma avaliação cadastrada." />
             ) : (
                 <table
                     border="1"
-                    cellPadding="8"
-                    cellSpacing="0"
+                    cellPadding="6"
                     style={{
                         width: "100%",
                         borderCollapse: "collapse",
                         textAlign: "center",
-                        marginTop: 10,
-                        borderRadius: 10,
+                        borderRadius: "10px",
                         overflow: "hidden",
                     }}
                 >
-                    <thead style={{ background: "#f5f5f5", fontWeight: "bold" }}>
+                    <thead style={{ background: "#f5f5f5" }}>
                         <tr>
                             <th>Turma</th>
                             <th>Data</th>
@@ -134,15 +133,21 @@ export default function Dashboard() {
                         </tr>
                     </thead>
                     <tbody>
-                        {avaliacoes
-                            .sort((a, b) => new Date(a.data) - new Date(b.data))
-                            .map((p, i) => (
-                                <tr key={i}>
-                                    <td>{p.turma}</td>
-                                    <td>{new Date(p.data).toLocaleDateString("pt-BR")}</td>
-                                    <td>{p.nome}</td>
-                                </tr>
-                            ))}
+                        {avaliacoesOrdenadas.map((a, i) => (
+                            <tr key={i}>
+                                <td>{a.turma}</td>
+                                <td>
+                                    {a.data
+                                        ? new Date(a.data).toLocaleDateString("pt-BR", {
+                                            day: "2-digit",
+                                            month: "2-digit",
+                                            year: "numeric",
+                                        })
+                                        : "—"}
+                                </td>
+                                <td>{a.nome}</td>
+                            </tr>
+                        ))}
                     </tbody>
                 </table>
             )}
