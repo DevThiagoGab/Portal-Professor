@@ -6,30 +6,31 @@ import StatusMessage from "../../components/StatusMessage";
 export default function Avaliacoes() {
     const { avaliacoes, setAvaliacoes } = useContext(DataContext);
 
+    // Estados dos campos
     const [nome, setNome] = useState("");
     const [peso, setPeso] = useState("");
     const [turma, setTurma] = useState("");
     const [data, setData] = useState("");
+
+    // Estados de feedback
     const [carregando, setCarregando] = useState(true);
     const [erro, setErro] = useState(null);
 
-    // 🕓 Simula carregamento inicial (como se viesse de API)
+    // Simula carregamento inicial
     useEffect(() => {
         try {
-            setCarregando(true);
-            const timer = setTimeout(() => {
-                setCarregando(false);
-            }, 1000);
+            const timer = setTimeout(() => setCarregando(false), 1000);
             return () => clearTimeout(timer);
-        } catch (e) {
+        } catch (err) {
             setErro("Erro ao carregar as avaliações.");
             setCarregando(false);
         }
     }, []);
 
-    // ⚖️ Calcula total geral
+    // Calcula total geral
     const totalPeso = avaliacoes.reduce((acc, a) => acc + Number(a.peso), 0);
 
+    // Adicionar nova avaliação
     const handleAdd = () => {
         if (!nome || !peso || !turma || !data) {
             alert("Preencha todos os campos!");
@@ -38,16 +39,14 @@ export default function Avaliacoes() {
 
         const pesoNumero = Number(peso);
 
-        // Filtra só as avaliações da mesma turma
+        // Soma apenas os pesos da mesma turma
         const avaliacoesDaTurma = avaliacoes.filter((a) => a.turma === turma);
-
-        // Soma apenas os pesos dessa turma
         const somaPorTurma = avaliacoesDaTurma.reduce(
             (acc, a) => acc + Number(a.peso),
             0
         );
 
-        // Valida se ao adicionar o novo peso vai ultrapassar 100%
+        // Valida limite de 100%
         if (somaPorTurma + pesoNumero > 100) {
             alert(
                 `A soma dos pesos da turma ${turma} ultrapassa 100%! (atual: ${somaPorTurma}%)`
@@ -65,13 +64,14 @@ export default function Avaliacoes() {
         setData("");
     };
 
+    // Excluir avaliação
     const handleDelete = (index) => {
         if (window.confirm("Deseja realmente excluir essa avaliação?")) {
             setAvaliacoes(avaliacoes.filter((_, i) => i !== index));
         }
     };
 
-    // ⏳ Estado de carregamento
+    // Estados de carregamento/erro
     if (carregando) {
         return (
             <Layout>
@@ -80,15 +80,10 @@ export default function Avaliacoes() {
         );
     }
 
-    // ❌ Estado de erro
     if (erro) {
         return (
             <Layout>
-                <StatusMessage
-                    type="error"
-                    message={erro}
-                    onRetry={() => window.location.reload()}
-                />
+                <StatusMessage type="error" message={erro} onRetry={() => window.location.reload()} />
             </Layout>
         );
     }
@@ -97,7 +92,7 @@ export default function Avaliacoes() {
         <Layout>
             <h2>Configuração de Avaliações</h2>
 
-            {/* Formulário de criação */}
+            {/* Formulário */}
             <div
                 style={{
                     display: "flex",
@@ -110,20 +105,20 @@ export default function Avaliacoes() {
                     placeholder="Nome da atividade"
                     value={nome}
                     onChange={(e) => setNome(e.target.value)}
-                    style={{ padding: 6 }}
+                    style={{ padding: 6, flex: 1, minWidth: 180 }}
                 />
                 <input
                     placeholder="Peso (%)"
                     type="number"
                     value={peso}
                     onChange={(e) => setPeso(e.target.value)}
-                    style={{ padding: 6, width: 90 }}
+                    style={{ padding: 6, width: 100 }}
                 />
                 <input
                     placeholder="Turma"
                     value={turma}
                     onChange={(e) => setTurma(e.target.value)}
-                    style={{ padding: 6, width: 120 }}
+                    style={{ padding: 6, flex: 1, minWidth: 140 }}
                 />
                 <input
                     type="date"
@@ -131,12 +126,11 @@ export default function Avaliacoes() {
                     onChange={(e) => setData(e.target.value)}
                     style={{ padding: 6 }}
                 />
-                <button onClick={handleAdd} style={{ padding: 6 }}>
+                <button onClick={handleAdd} style={{ padding: "6px 12px" }}>
                     Adicionar
                 </button>
             </div>
 
-            {/* Soma total */}
             <p style={{ marginTop: 10 }}>
                 Soma total dos pesos: <b>{totalPeso}%</b>
             </p>
@@ -155,6 +149,7 @@ export default function Avaliacoes() {
                         width: "100%",
                         borderCollapse: "collapse",
                         marginTop: 20,
+                        textAlign: "center",
                     }}
                 >
                     <thead style={{ background: "#f5f5f5" }}>
